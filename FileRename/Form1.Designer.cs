@@ -383,8 +383,8 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 43.78109F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 56.21891F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.btn_AddSkipKey, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.groupBox2, 1, 0);
@@ -404,7 +404,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(158, 145);
+            this.groupBox1.Size = new System.Drawing.Size(163, 145);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "跳过包含下列关键词的文件";
@@ -429,13 +429,13 @@
             ".exe"});
             this.checkedListBox2.Location = new System.Drawing.Point(3, 17);
             this.checkedListBox2.Name = "checkedListBox2";
-            this.checkedListBox2.Size = new System.Drawing.Size(152, 125);
+            this.checkedListBox2.Size = new System.Drawing.Size(157, 125);
             this.checkedListBox2.TabIndex = 17;
             // 
             // btn_AddSkipKey
             // 
             this.btn_AddSkipKey.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_AddSkipKey.Location = new System.Drawing.Point(3, 154);
+            this.btn_AddSkipKey.Location = new System.Drawing.Point(5, 154);
             this.btn_AddSkipKey.Name = "btn_AddSkipKey";
             this.btn_AddSkipKey.Size = new System.Drawing.Size(158, 40);
             this.btn_AddSkipKey.TabIndex = 19;
@@ -447,9 +447,9 @@
             // 
             this.groupBox2.Controls.Add(this.checkedListBox1);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(167, 3);
+            this.groupBox2.Location = new System.Drawing.Point(172, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(206, 145);
+            this.groupBox2.Size = new System.Drawing.Size(201, 145);
             this.groupBox2.TabIndex = 18;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "删除包含下列关键词的文件(夹)";
@@ -468,15 +468,15 @@
             ".url"});
             this.checkedListBox1.Location = new System.Drawing.Point(3, 17);
             this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(200, 125);
+            this.checkedListBox1.Size = new System.Drawing.Size(195, 125);
             this.checkedListBox1.TabIndex = 9;
             // 
             // btn_AddDeleteKey
             // 
             this.btn_AddDeleteKey.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_AddDeleteKey.Location = new System.Drawing.Point(167, 154);
+            this.btn_AddDeleteKey.Location = new System.Drawing.Point(172, 154);
             this.btn_AddDeleteKey.Name = "btn_AddDeleteKey";
-            this.btn_AddDeleteKey.Size = new System.Drawing.Size(206, 40);
+            this.btn_AddDeleteKey.Size = new System.Drawing.Size(201, 40);
             this.btn_AddDeleteKey.TabIndex = 16;
             this.btn_AddDeleteKey.Text = "添加关键词";
             this.btn_AddDeleteKey.UseVisualStyleBackColor = true;
