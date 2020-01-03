@@ -29,10 +29,8 @@ namespace FileRename
         bool flagForLoadCompleted = false;
         bool flagStop = false;
 
- 
-
         private delegate void myDelegate(string str1, string str2, string str3, string str4, string str5);
-        private delegate void myDelegate2(int nn, string tt); 
+        private delegate void myDelegate2(int nn, string tt);
         private void addRow(string s1, string s2, string s3, string s4, string s5)
         {
             if (dgv.InvokeRequired)
@@ -45,7 +43,6 @@ namespace FileRename
         }
         private void upStatus(int a, string txt)
         {
-
             if (InvokeRequired)
             {
                 myDelegate2 md = new myDelegate2(upStatus);
@@ -59,8 +56,8 @@ namespace FileRename
                     toolStripStatusLabel4.Text = txt;
             }
         }
-        
-        
+
+
         //计算文件大小
         static string GetLength(long lengthOfDocument)
         {
@@ -79,8 +76,10 @@ namespace FileRename
         {
             try
             {
+                Computer MyComputer = new Computer();
                 MediaInfo info = new MediaInfo();
                 DirectoryInfo root = new DirectoryInfo(path);
+                string fileOldName = "";
                 string fileNewName = "";
                 string keyword = "";
                 List<string> keywords = new List<string>();
@@ -100,7 +99,7 @@ namespace FileRename
                         skip = false;
                         if (flagStop)
                             return;
-                        fileNewName = f.Name;
+                        fileNewName = fileOldName = f.Name;
                         //跳过
                         if (keywords_skip.Count > 0)
                             foreach (string s in keywords_skip)
@@ -114,7 +113,7 @@ namespace FileRename
                         //删除
                         if (keywords_delete.Count > 0)
                             foreach (string s in keywords_delete)
-                                if (f.Name.Contains(s))
+                                if (fileOldName.Contains(s))
                                 {
                                     f.Delete(true);
                                     deletedCounts++;
@@ -125,21 +124,27 @@ namespace FileRename
                         if (keywords.Count > 0)
                             foreach (string st in keywords)
                             {
-                                if (f.Name.Contains(st))
+                                if (fileOldName.Contains(st))
                                     fileNewName = fileNewName.Replace(st, "");
                             }
                         //正则表达式     
                         if (regex != null)
                             if (regex.IsMatch(fileNewName))
                                 fileNewName = regex.Replace(fileNewName, "");
+                        fileNewName.Trim();
                         //重命名
-                        if (fileNewName != f.Name)
+                        if (fileNewName != fileOldName)
                         {
-                            string aaa = "";
-                            aaa = Path.GetDirectoryName(f.FullName) + "\\" + fileNewName;
-                            f.MoveTo(aaa);
-                            renamedCounts++;
-                            upStatus(1, renamedCounts.ToString());
+                            try
+                            {
+                                MyComputer.FileSystem.RenameFile(f.FullName, fileNewName);
+                                renamedCounts++;
+                                upStatus(1, renamedCounts.ToString());
+                            }
+                            catch(Exception e)
+                            {
+                                MessageBox.Show(e.Message);
+                            }
                         }
                     }
                 foreach (FileInfo f in root.GetFiles())
@@ -147,7 +152,7 @@ namespace FileRename
                     if (flagStop)
                         return;
                     skip = false;
-                    fileNewName = f.Name;
+                    fileNewName = fileOldName = f.Name;
                     info.Open(f.FullName);
                     //跳过
                     if (keywords_skip.Count > 0)
@@ -163,7 +168,7 @@ namespace FileRename
                     //删除
                     if (keywords_delete.Count > 0)
                         foreach (string s in keywords_delete)
-                            if (f.Name.Contains(s))
+                            if (fileOldName.Contains(s))
                             {
                                 f.Delete();
                                 deletedCounts++;
@@ -175,26 +180,32 @@ namespace FileRename
                     if (keywords.Count > 0)
                         foreach (string st in keywords)
                         {
-                            if (f.Name.Contains(st))
+                            if (fileOldName.Contains(st))
                                 fileNewName = fileNewName.Replace(st, "");
                         }
                     //正则表达式     \[\d{6}\]
                     if (regex != null)
                         if (regex.IsMatch(fileNewName))
                             fileNewName = regex.Replace(fileNewName, "");
-                    if (fileNewName != f.Name)
+                    fileNewName = fileNewName.Trim();
+                    if (fileNewName != fileOldName)
                     {
-                        string aaa = "";
-                        aaa = Path.GetDirectoryName(f.FullName) + "\\" + fileNewName;
-                        f.MoveTo(aaa);
-                        renamedCounts++;
-                        upStatus(1, renamedCounts.ToString());
+                        try
+                        {
+                            MyComputer.FileSystem.RenameFile(f.FullName, fileNewName);
+                            renamedCounts++;
+                            upStatus(1, renamedCounts.ToString());
+                        }
+                        catch(Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
                     }
                     format = "";
                     size = "";
                     format = info.Get(StreamKind.Video, 0, "Format");
                     if (format == "")
-                        format = f.Extension.Replace(".","");
+                        format = f.Extension.Replace(".", "");
                     size = GetLength(f.Length);
                     addRow(f.Name, format, info.Get(StreamKind.Video, 0, "Width") + "x" + info.Get(StreamKind.Video, 0, "Height"), size, f.FullName);
                     info.Close();
@@ -213,7 +224,6 @@ namespace FileRename
             foreach (DirectoryInfo d in root.GetDirectories())
                 getDirectory(d.FullName);
         }
-
         public Form1()
         {
             InitializeComponent();
@@ -223,11 +233,11 @@ namespace FileRename
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            asc.controllInitializeSize(this);
+            //asc.controllInitializeSize(this);
         }
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
-            asc.controlAutoSize(this);
+            //asc.controlAutoSize(this);
         }
         private void btn_Start_Click(object sender, EventArgs e)
         {
@@ -275,13 +285,12 @@ namespace FileRename
         {
             if (dgv == null || dgv.Rows.Count == 0)
                 return;
-
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "TXT files (*.txt)|*.txt";
             saveFileDialog.FilterIndex = 0;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.CreatePrompt = true;
-            saveFileDialog.FileName = null;
+            saveFileDialog.CreatePrompt = false;
+            saveFileDialog.FileName = "FileList";
             saveFileDialog.Title = "保存";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -319,7 +328,7 @@ namespace FileRename
             saveFileDialog.FilterIndex = 0;
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.CreatePrompt = false;
-            saveFileDialog.FileName = null;
+            saveFileDialog.FileName = "FileList";
             saveFileDialog.Title = "保存";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -401,13 +410,35 @@ namespace FileRename
                         string dir1 = fileInfo.DirectoryName;
                         string nn = dgv.Rows[e.RowIndex].Cells[1].Value.ToString();
                         MyComputer.FileSystem.RenameFile(fileInfo.FullName, nn);
-
                         dgv.Rows[e.RowIndex].Cells[5].Value = dir1 + "\\" + nn;
                     }
                     catch (Exception ee)
                     {
                         MessageBox.Show(ee.Message);
                     }
+                }
+        }
+        private void dgv_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (flagForLoadCompleted)
+                if (e.ColumnIndex == 1 && e.RowIndex < dgv.RowCount)
+                {
+                    if (e.FormattedValue.ToString() == "")
+                        MessageBox.Show("文件名不能为空");
+                    if (e.FormattedValue.ToString().Contains("DataGridView"))
+                    {
+                        e.Cancel = true;
+                        dgv.CancelEdit();
+                    }
+                    List<char> invalid = new List<char> { '/', '\\', '<', '>', '|', '?', '*', '"', ':' };
+                    foreach (char a in invalid)
+                        if (e.FormattedValue.ToString().Contains(a))
+                        {
+                            MessageBox.Show("文件名不能包含"+a+"字符");
+                            e.Cancel = true;
+                            dgv.CancelEdit();
+                            break;
+                        }
                 }
         }
         //定位文件

@@ -16,6 +16,7 @@
 [Uncensored]
 [EngSub]
 THE ANIMATION
+Anime Edition
 The Animation
 [chippai]
 [ちっぱいchippai]
@@ -50,6 +51,7 @@ The Animation
 [Okazu.Sub]
 [Maho.sub]
 [FoxSub] 
+[MahoXOkazu]
 [MahoxSemede]
 [HSxMaho.sub]
 [ANKxMaho.sub]
@@ -67,6 +69,7 @@ The Animation
 [Honnybit]
 [Celeb]
 [Collaboration Works]
+[Collaborationworks]
 [亚萨园]
 [魔人]
 [魔人 petit]
@@ -90,6 +93,7 @@ The Animation
 (320x240)
 [704x396]
 (704X396)
+(640x480 Xvid)
 [720x480]
 [960x720]
 (960x720 x264 AAC)
@@ -111,6 +115,7 @@ The Animation
 (DVD 960x720 x264 AC3)
 (DVD 960x720 x264 AACx2)
 [720P x264 AAC Hi10P]
+[720P Hi10P x264 AAC]
 [720P x264 Hi10P AAC]
 [720P BIG5]
 (SpursEngine 960x720 H.264 AAC)
@@ -129,6 +134,7 @@ The Animation
 [1280x720 x264 AAC Hi10p]
 [1280x720 x264 AAC Hi10P]
 [1080P x264 FLAC BDRIP]
+[BDrip 1920x1080 x264 FLAC Hi10P]
 (BD 1920x1080 x264 10bit AAC)
 (BD 1920x1080 x264 AVC 10bit)
 (BD 1920x1080 x264 AAC)
