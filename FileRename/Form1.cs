@@ -454,10 +454,7 @@ namespace FileRename
             //获取正则表达式
             if (!String.IsNullOrEmpty(textBox1.Text))
                 regex = new Regex(textBox1.Text);
-
-            backgroundWorker1.DoWork += BackgroundWorker1_DoWork;
             backgroundWorker1.WorkerSupportsCancellation = true;
-            backgroundWorker1.RunWorkerCompleted += BackgroundWorker1_RunWorkerCompleted;
             try
             {
                 btn_Stop.Enabled = true;
