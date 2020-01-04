@@ -52,20 +52,22 @@
             this.btn_AddSkipKey = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel6 = new System.Windows.Forms.Panel();
             this.label13 = new System.Windows.Forms.Label();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.label10 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.label10 = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btn_OpenFile = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -101,8 +103,6 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.panel6 = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -118,8 +118,10 @@
             this.groupBox2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            this.panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            this.panel5.SuspendLayout();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage4.SuspendLayout();
@@ -127,8 +129,6 @@
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
-            this.panel5.SuspendLayout();
-            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -407,6 +407,26 @@
             this.tableLayoutPanel3.Size = new System.Drawing.Size(362, 224);
             this.tableLayoutPanel3.TabIndex = 30;
             // 
+            // panel6
+            // 
+            this.panel6.AllowDrop = true;
+            this.panel6.Controls.Add(this.label13);
+            this.panel6.Controls.Add(this.radioButton4);
+            this.panel6.Controls.Add(this.label10);
+            this.panel6.Controls.Add(this.label8);
+            this.panel6.Controls.Add(this.radioButton3);
+            this.panel6.Controls.Add(this.checkBox2);
+            this.panel6.Controls.Add(this.numericUpDown3);
+            this.panel6.Controls.Add(this.numericUpDown2);
+            this.panel6.Controls.Add(this.label9);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(3, 115);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(356, 106);
+            this.panel6.TabIndex = 8;
+            this.panel6.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
+            this.panel6.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
+            // 
             // label13
             // 
             this.label13.AllowDrop = true;
@@ -433,6 +453,18 @@
             this.radioButton4.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.radioButton4.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
             // 
+            // label10
+            // 
+            this.label10.AllowDrop = true;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(105, 43);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(29, 12);
+            this.label10.TabIndex = 21;
+            this.label10.Text = "个或";
+            this.label10.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
+            this.label10.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
+            // 
             // label8
             // 
             this.label8.AllowDrop = true;
@@ -444,6 +476,22 @@
             this.label8.Text = "从第";
             this.label8.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.label8.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AllowDrop = true;
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Checked = true;
+            this.radioButton3.Location = new System.Drawing.Point(19, 74);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(119, 16);
+            this.radioButton3.TabIndex = 22;
+            this.radioButton3.TabStop = true;
+            this.radioButton3.Text = "从文件名前端开始";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.Click += new System.EventHandler(this.radioButton3_Click);
+            this.radioButton3.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
+            this.radioButton3.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
             // 
             // checkBox2
             // 
@@ -458,6 +506,22 @@
             this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             this.checkBox2.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.checkBox2.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
+            // 
+            // numericUpDown3
+            // 
+            this.numericUpDown3.AllowDrop = true;
+            this.numericUpDown3.Location = new System.Drawing.Point(54, 41);
+            this.numericUpDown3.Maximum = new decimal(new int[] {
+            254,
+            0,
+            0,
+            0});
+            this.numericUpDown3.Name = "numericUpDown3";
+            this.numericUpDown3.Size = new System.Drawing.Size(45, 21);
+            this.numericUpDown3.TabIndex = 19;
+            this.numericUpDown3.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
+            this.numericUpDown3.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
+            this.numericUpDown3.Validating += new System.ComponentModel.CancelEventHandler(this.numericUpDown3_Validating);
             // 
             // numericUpDown2
             // 
@@ -497,49 +561,21 @@
             this.label9.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.label9.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
             // 
-            // numericUpDown3
+            // panel5
             // 
-            this.numericUpDown3.AllowDrop = true;
-            this.numericUpDown3.Location = new System.Drawing.Point(54, 41);
-            this.numericUpDown3.Maximum = new decimal(new int[] {
-            254,
-            0,
-            0,
-            0});
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(45, 21);
-            this.numericUpDown3.TabIndex = 19;
-            this.numericUpDown3.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
-            this.numericUpDown3.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
-            this.numericUpDown3.Validating += new System.ComponentModel.CancelEventHandler(this.numericUpDown3_Validating);
-            // 
-            // radioButton3
-            // 
-            this.radioButton3.AllowDrop = true;
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Checked = true;
-            this.radioButton3.Location = new System.Drawing.Point(19, 74);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(119, 16);
-            this.radioButton3.TabIndex = 22;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "从文件名前端开始";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.Click += new System.EventHandler(this.radioButton3_Click);
-            this.radioButton3.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
-            this.radioButton3.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
-            // 
-            // label10
-            // 
-            this.label10.AllowDrop = true;
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(105, 43);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(29, 12);
-            this.label10.TabIndex = 21;
-            this.label10.Text = "个或";
-            this.label10.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
-            this.label10.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
+            this.panel5.AllowDrop = true;
+            this.panel5.Controls.Add(this.label2);
+            this.panel5.Controls.Add(this.label4);
+            this.panel5.Controls.Add(this.textBox3);
+            this.panel5.Controls.Add(this.textBox1);
+            this.panel5.Controls.Add(this.btn_OpenFile);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(3, 3);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(356, 106);
+            this.panel5.TabIndex = 7;
+            this.panel5.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
+            this.panel5.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
             // 
             // label2
             // 
@@ -568,6 +604,17 @@
             this.label4.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.label4.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
             // 
+            // textBox3
+            // 
+            this.textBox3.AllowDrop = true;
+            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox3.Location = new System.Drawing.Point(88, 20);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(151, 21);
+            this.textBox3.TabIndex = 23;
+            this.textBox3.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
+            this.textBox3.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
+            // 
             // textBox1
             // 
             this.textBox1.AllowDrop = true;
@@ -592,17 +639,6 @@
             this.btn_OpenFile.UseVisualStyleBackColor = true;
             this.btn_OpenFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.btn_OpenFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
-            // 
-            // textBox3
-            // 
-            this.textBox3.AllowDrop = true;
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.Location = new System.Drawing.Point(88, 20);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(151, 21);
-            this.textBox3.TabIndex = 23;
-            this.textBox3.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
-            this.textBox3.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
             // 
             // tabPage3
             // 
@@ -984,42 +1020,6 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker1_RunWorkerCompleted);
             // 
-            // panel5
-            // 
-            this.panel5.AllowDrop = true;
-            this.panel5.Controls.Add(this.label2);
-            this.panel5.Controls.Add(this.label4);
-            this.panel5.Controls.Add(this.textBox3);
-            this.panel5.Controls.Add(this.textBox1);
-            this.panel5.Controls.Add(this.btn_OpenFile);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(3, 3);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(356, 106);
-            this.panel5.TabIndex = 7;
-            this.panel5.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
-            this.panel5.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
-            // 
-            // panel6
-            // 
-            this.panel6.AllowDrop = true;
-            this.panel6.Controls.Add(this.label13);
-            this.panel6.Controls.Add(this.radioButton4);
-            this.panel6.Controls.Add(this.label10);
-            this.panel6.Controls.Add(this.label8);
-            this.panel6.Controls.Add(this.radioButton3);
-            this.panel6.Controls.Add(this.checkBox2);
-            this.panel6.Controls.Add(this.numericUpDown3);
-            this.panel6.Controls.Add(this.numericUpDown2);
-            this.panel6.Controls.Add(this.label9);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(3, 115);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(356, 106);
-            this.panel6.TabIndex = 8;
-            this.panel6.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
-            this.panel6.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1029,6 +1029,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.statusStrip1);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "批量重命名文件";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
@@ -1049,8 +1050,12 @@
             this.groupBox2.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
@@ -1061,10 +1066,6 @@
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

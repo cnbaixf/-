@@ -443,7 +443,8 @@ namespace FileRename
         }
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("批量重命名文件 1.0.0");
+            About about = new About();
+            about.ShowDialog();
         }
         #endregion
 
