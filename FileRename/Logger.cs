@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,16 +9,24 @@ using System.IO;
 namespace FileRename
 {
     public enum InformationType {Info,Success,Failure,Error}
-
-
+    
     public class Logger
     {
-        //string logFile = @"\LogFiles\" +DateTime.Now.Year.ToString()+"_"+ DateTime.Now.Month.ToString() + "_" + DateTime.Now.Day.ToString() + 
-        //    "_" + DateTime.Now.Hour.ToString() + "_" + DateTime.Now.Minute.ToString() + "_" + DateTime.Now.Second.ToString() + ".txt";
         string basePath = System.AppDomain.CurrentDomain.BaseDirectory+"\\LogFiles";
         bool inited = false;
         StreamWriter sw;
-        public void Init(string fileName = null)
+        
+        public Logger()
+        {
+            Init();
+        }
+
+        public Logger(string filename)
+        {
+            Init(filename);
+        }
+
+        private void Init(string fileName = null)
         {
             if (!Directory.Exists(basePath))
                 Directory.CreateDirectory(basePath);
@@ -54,13 +63,12 @@ namespace FileRename
         }
         public void Close()
         {
-            sw.Close();
-            sw.Dispose();
+            if(sw!=null)
+               { 
+                    sw.Close();
+                    sw.Dispose();
+               }
             inited = false;
         }
-
-
-
-
     }
 }
