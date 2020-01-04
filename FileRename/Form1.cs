@@ -58,6 +58,13 @@ namespace FileRename
         }
 
 
+        //字符串反转
+        static string ReverseStr(string original)
+        {
+            char[] arr = original.ToCharArray();
+            Array.Reverse(arr);
+            return new string(arr);
+        }
         //计算文件大小
         static string GetLength(long lengthOfDocument)
         {
@@ -84,7 +91,12 @@ namespace FileRename
                 string keyword = "";
                 List<string> keywords = new List<string>();
                 bool skip = false;
+                int del_position = Convert.ToInt32(numericUpDown2.Value);
+                int del_counts = Convert.ToInt32(numericUpDown3.Value);
+                int add_position = Convert.ToInt32(numericUpDown1.Value);
                 string format = "";
+                string extensionName = "";
+                string nameWithoutExtension = "";
                 string size = "";
                 if (File.Exists(dir2))
                 {
@@ -141,7 +153,7 @@ namespace FileRename
                                 renamedCounts++;
                                 upStatus(1, renamedCounts.ToString());
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
                                 MessageBox.Show(e.Message);
                             }
@@ -153,6 +165,7 @@ namespace FileRename
                         return;
                     skip = false;
                     fileNewName = fileOldName = f.Name;
+                    extensionName = f.Extension;
                     info.Open(f.FullName);
                     //跳过
                     if (keywords_skip.Count > 0)
@@ -187,6 +200,54 @@ namespace FileRename
                     if (regex != null)
                         if (regex.IsMatch(fileNewName))
                             fileNewName = regex.Replace(fileNewName, "");
+                    //删除指定位置字符
+                    nameWithoutExtension = fileNewName.Replace(extensionName, "");
+                    if (checkBox2.Checked && del_position > 1)
+                    {
+                        if (radioButton4.Checked)
+                            nameWithoutExtension = ReverseStr(nameWithoutExtension);
+                        if (nameWithoutExtension.Length >= del_position)
+                            nameWithoutExtension = nameWithoutExtension.Substring(0, del_position - 1);
+                        if (radioButton4.Checked)
+                            nameWithoutExtension = ReverseStr(nameWithoutExtension);
+                        fileNewName = nameWithoutExtension + extensionName;
+                    }
+                    else if (!checkBox2.Checked && deletedCounts>= 1)
+                    {
+                        if (radioButton4.Checked)
+                            nameWithoutExtension = ReverseStr(nameWithoutExtension);
+                        if(nameWithoutExtension.Length-del_position+1>=del_counts)
+                            nameWithoutExtension = nameWithoutExtension.Remove(del_position - 1, del_counts);
+                        else
+                            nameWithoutExtension = nameWithoutExtension.Substring(0,del_position - 1);
+                        if (radioButton4.Checked)
+                            nameWithoutExtension = ReverseStr(nameWithoutExtension);
+                        fileNewName = nameWithoutExtension + extensionName;
+                    }
+                    //在指定位置添加字符
+                    else
+                    {
+                        if(txt_addFirst.Text.ToString()!="")
+                        {
+                            if (fileNewName.Length + txt_addFirst.Text.Length <= 255)
+                                fileNewName = txt_addFirst.Text + fileNewName;
+                        }
+                        if(txt_addLast.Text.ToString()!="")
+                        {
+                            if (fileNewName.Length + txt_addLast.Text.Length <= 255)
+                                fileNewName =  fileNewName+txt_addLast.Text;
+                        }
+                        if(textBox4.Text.ToString()!="")
+                        {
+                            if (fileNewName.Length + textBox4.Text.Length <= 255)
+                                fileNewName = fileNewName.Insert((int)numericUpDown1.Value, textBox4.Text);
+                        }
+                    }
+                    //替换
+                    if (textBox5.Text.ToString() != "")
+                        fileNewName.Replace(textBox5.Text, textBox6.Text.ToString());
+
+
                     fileNewName = fileNewName.Trim();
                     if (fileNewName != fileOldName)
                     {
@@ -196,7 +257,7 @@ namespace FileRename
                             renamedCounts++;
                             upStatus(1, renamedCounts.ToString());
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             MessageBox.Show(ex.Message);
                         }
@@ -205,7 +266,7 @@ namespace FileRename
                     size = "";
                     format = info.Get(StreamKind.Video, 0, "Format");
                     if (format == "")
-                        format = f.Extension.Replace(".", "");
+                        format = extensionName.Replace(".", "");
                     size = GetLength(f.Length);
                     addRow(f.Name, format, info.Get(StreamKind.Video, 0, "Width") + "x" + info.Get(StreamKind.Video, 0, "Height"), size, f.FullName);
                     info.Close();
@@ -227,8 +288,6 @@ namespace FileRename
         public Form1()
         {
             InitializeComponent();
-            radioButton2.Checked = true;
-            btn_Stop.Enabled = false;
             flagForLoadCompleted = true;
         }
         private void Form1_Load(object sender, EventArgs e)
@@ -397,6 +456,14 @@ namespace FileRename
         {
             radioButton2.Checked = false;
         }
+        private void radioButton3_Click(object sender, EventArgs e)
+        {
+            radioButton4.Checked = false;
+        }
+        private void radioButton4_Click(object sender, EventArgs e)
+        {
+            radioButton3.Checked = false;
+        }
         //dgv中重命名文件
         private void dgv_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -434,7 +501,7 @@ namespace FileRename
                     foreach (char a in invalid)
                         if (e.FormattedValue.ToString().Contains(a))
                         {
-                            MessageBox.Show("文件名不能包含"+a+"字符");
+                            MessageBox.Show("文件名不能包含" + a + "字符");
                             e.Cancel = true;
                             dgv.CancelEdit();
                             break;
@@ -529,6 +596,96 @@ namespace FileRename
             {
             }
         }
-
+        //拖动文件夹到panel1获取目标路径
+        private void panel1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+        private void panel1_DragDrop(object sender, DragEventArgs e)
+        {
+            string path = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+            //如果拖的是文件，则返回文件所在的文件夹的路径
+            if (File.Exists(path))
+                path = Path.GetDirectoryName(path);
+            textBox2.Text = path;
+        }
+        //拖动文件到tabPage2获取关键词列表路径
+        private void tabPage2_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+        private void tabPage2_DragDrop(object sender, DragEventArgs e)
+        {
+            string path = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+            if (File.Exists(path))
+                textBox3.Text = path;
+        }
+        private void numericUpDown2_Validating(object sender, CancelEventArgs e)
+        {
+            if (Convert.ToInt32(numericUpDown2.Value + numericUpDown3.Value) > 255)
+                numericUpDown2.Value = 255 - numericUpDown3.Value;
+        }
+        private void numericUpDown3_Validating(object sender, CancelEventArgs e)
+        {
+            if (Convert.ToInt32(numericUpDown2.Value + numericUpDown3.Value) > 255)
+                numericUpDown3.Value = 255 - numericUpDown2.Value;
+        }
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked)
+                if (Convert.ToInt32(numericUpDown2.Value) == 1)
+                    numericUpDown2.Value = 2;
+        }
+        private void txt_addFirst_TextChanged(object sender, EventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            List<char> invalid = new List<char> { '/', '\\', '<', '>', '|', '?', '*', '"', ':' };
+            foreach (char a in invalid)
+            {
+                if (tb.Text.Contains(a))
+                {
+                    tb.Text = "";
+                    MessageBox.Show("文件名不能包含" + a + "字符");
+                    break;
+                }
+            }
+        }
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            List<char> invalid = new List<char> { '/', '\\', '<', '>', '|', '?', '*', '"', ':' };
+            foreach (char a in invalid)
+            {
+                if (textBox4.Text.Contains(a))
+                {
+                    textBox4.Text = "";
+                    MessageBox.Show("文件名不能包含" + a + "字符");
+                    break;
+                }
+            }
+            if (textBox4.Text.Length + (int)numericUpDown1.Value > 255)
+            {
+                MessageBox.Show("文件名不能超过255字符");
+                textBox4.Text = textBox4.Text.Substring(0, 255 - (int)numericUpDown1.Value);
+            }
+        }
+        private void textBox6_TextChanged(object sender, EventArgs e)
+        {
+            List<char> invalid = new List<char> { '/', '\\', '<', '>', '|', '?', '*', '"', ':' };
+            foreach (char a in invalid)
+            {
+                if (textBox6.Text.Contains(a))
+                {
+                    textBox6.Text = "";
+                    MessageBox.Show("文件名不能包含" + a + "字符");
+                    break;
+                }
+            }
+        }
     }
 }
