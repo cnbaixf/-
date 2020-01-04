@@ -15,6 +15,8 @@
 [UNCEN]
 [Uncensored]
 [EngSub]
+[BDrip]
+[BIG5]
 THE ANIMATION
 Anime Edition
 The Animation
@@ -39,6 +41,7 @@ The Animation
 [PoRO petit]
 [EDGE（エッジ)]
 [EDGE（エッジ）]
+[内嵌字幕]
 [桜都字幕组]
 [脸肿字幕组]
 [攻めで字幕组]
@@ -85,6 +88,7 @@ The Animation
 [x264_aac]
 [DVDRIP 480P]
 [720P]
+[720p]
 [720P GB]
 [720P Hi10P]
 720P_HEVC
@@ -104,12 +108,15 @@ The Animation
 (720x480Divx4)
 (848x480)
 [854x480]
+[960x720 x264 AAC]
 (960x720)
 [1280x720]
 (1280X720)
 [1280x960]
 (DVD 720x480 H.264 AAC)
+[DVDrip x264 AAC 720P Hi10P]
 (960x720 H.264 AAC)
+(DVD 960x720 x264 Hi10P)
 (DVD 960x720 x264 AAC)
 (DVD 960x720 x264 AAC)
 (DVD 960x720 x264 AC3)
@@ -131,9 +138,14 @@ The Animation
 (DVD 1280x720 x264 AAC BGM無し切り替え可)
 [DVD 1280x720 AVC 10bit ★]
 [1280x720 x264 Hi10P AAC]
+(DVD 1280×720 x264 AAC)
+(DVD 1280x720 x264 AAC Hi10P)
+(1280x720 x264 10bit AAC)
 [1280x720 x264 AAC Hi10p]
 [1280x720 x264 AAC Hi10P]
 [1080P x264 FLAC BDRIP]
+(HD 1920x1080 x264 AVC)
+ (BD 1080p x264 AAC) 
 [BDrip 1920x1080 x264 FLAC Hi10P]
 (BD 1920x1080 x264 10bit AAC)
 (BD 1920x1080 x264 AVC 10bit)
@@ -141,20 +153,15 @@ The Animation
 (BD Hi10P 1920x1080 WV)
 (BD 1920x1080 x264 10bit AC-3)
 [PS3 960x720 H.264+AAC]
+(PS3アプコン DVD 960x720 x264 AAC)
 (PS3アプコン 960x720 H.264 AAC)
 (PS3アプコン  960x720 H.264 AAC)
 (PS3アプコン 1280x720 x264 AAC)
 (PS3アプコン 960x720 x264 AAC)
 (PS3アプコン DVD 1280x720 x264 AAC)
-【Sex8.cc】
-【sex8.cc】
-【精品】
-【fjax003】
-【daohulu1】
 [10bit]
 [WarpSharp]
 [rerip]
-[BIG5]
 [RV10]
 [RV_10]
 [HKG]
@@ -164,11 +171,3 @@ The Animation
 [RHD]
 [Okazu.Rip]
 [ZIZ]
-[CRC_
-性质勃勃@
-草榴社區@
-顺子依然@
-草榴社区
-【大劍師】
-(DVD 640x480 WMV9 30fps 29m02s)
-(DVD 640x480 WMV9 30fps 29m40s)

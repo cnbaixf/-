@@ -637,6 +637,7 @@
             this.btn_OpenFile.TabIndex = 20;
             this.btn_OpenFile.Text = "浏览";
             this.btn_OpenFile.UseVisualStyleBackColor = true;
+            this.btn_OpenFile.Click += new System.EventHandler(this.btn_OpenFile_Click);
             this.btn_OpenFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.btn_OpenFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
             // 
