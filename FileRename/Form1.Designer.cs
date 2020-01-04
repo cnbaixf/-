@@ -608,12 +608,16 @@
             // 
             this.textBox3.AllowDrop = true;
             this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox3.ForeColor = System.Drawing.SystemColors.ButtonShadow;
             this.textBox3.Location = new System.Drawing.Point(88, 20);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(151, 21);
             this.textBox3.TabIndex = 23;
+            this.textBox3.Text = "可将文件拖动至此区域";
             this.textBox3.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.textBox3.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
+            this.textBox3.Enter += new System.EventHandler(this.textBox3_Enter);
+            this.textBox3.Leave += new System.EventHandler(this.textBox3_Leave);
             // 
             // textBox1
             // 
@@ -891,12 +895,16 @@
             this.textBox2.AllowDrop = true;
             this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox2.ForeColor = System.Drawing.SystemColors.ButtonShadow;
             this.textBox2.Location = new System.Drawing.Point(95, 15);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(153, 21);
             this.textBox2.TabIndex = 2;
+            this.textBox2.Text = "可将文件夹拖动至此区域";
             this.textBox2.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel1_DragDrop);
             this.textBox2.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel1_DragEnter);
+            this.textBox2.Enter += new System.EventHandler(this.textBox2_Enter);
+            this.textBox2.Leave += new System.EventHandler(this.textBox2_Leave);
             // 
             // radioButton2
             // 

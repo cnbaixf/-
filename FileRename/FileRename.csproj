@@ -85,6 +85,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="InputDialog.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MediaInfoDLL.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,6 +18,7 @@ namespace FileRename
     {
         AutoSizeFormClass asc = new AutoSizeFormClass();
         MediaInfo MediaInfo = new MediaInfo();
+        Logger logger = new Logger();
         string dir1 = @"";       //目标文件夹路径
         string dir2 = @"";       //关键词列表路径
         List<string> keywords_delete = new List<string>();
@@ -28,6 +29,15 @@ namespace FileRename
         Regex regex;
         bool flagForLoadCompleted = false;
         bool flagStop = false;
+        Computer MyComputer = new Computer();
+        List<string> keywords = new List<string>();
+        int del_position = 0;
+        int del_counts = 0;
+        int add_position = 0;
+        bool t2has = false;
+        bool t3has = false;
+
+
 
         private delegate void myDelegate(string str1, string str2, string str3, string str4, string str5);
         private delegate void myDelegate2(int nn, string tt);
@@ -83,29 +93,18 @@ namespace FileRename
         {
             try
             {
-                Computer MyComputer = new Computer();
                 MediaInfo info = new MediaInfo();
                 DirectoryInfo root = new DirectoryInfo(path);
                 string fileOldName = "";
                 string fileNewName = "";
-                string keyword = "";
-                List<string> keywords = new List<string>();
                 bool skip = false;
-                int del_position = Convert.ToInt32(numericUpDown2.Value);
-                int del_counts = Convert.ToInt32(numericUpDown3.Value);
-                int add_position = Convert.ToInt32(numericUpDown1.Value);
                 string format = "";
                 string extensionName = "";
                 string nameWithoutExtension = "";
                 string size = "";
-                if (File.Exists(dir2))
-                {
-                    StreamReader sr = new StreamReader(dir2, Encoding.UTF8);
-                    while ((keyword = sr.ReadLine()) != null)
-                        keywords.Add(keyword);
-                    sr.Close();
-                }
+                //重命名文件夹
                 if (checkBox1.Checked)
+                {
                     foreach (DirectoryInfo f in root.GetDirectories())
                     {
                         skip = false;
@@ -114,35 +113,112 @@ namespace FileRename
                         fileNewName = fileOldName = f.Name;
                         //跳过
                         if (keywords_skip.Count > 0)
+                        {
                             foreach (string s in keywords_skip)
                                 if (fileNewName.Contains(s))
                                 {
                                     skip = true;
+                                    logger.Write("该文件夹" + fileOldName + "包含跳过关键词 " + s + " ，跳过", InformationType.Info);
                                     break;
                                 }
+                        }
                         if (skip)
                             continue;
                         //删除
                         if (keywords_delete.Count > 0)
+                        {
                             foreach (string s in keywords_delete)
                                 if (fileOldName.Contains(s))
                                 {
                                     f.Delete(true);
+                                    logger.Write("该文件夹" + fileOldName + "包含删除关键词 " + s + " ，删除", InformationType.Success);
                                     deletedCounts++;
                                     upStatus(2, deletedCounts.ToString());
                                     continue;
                                 }
+                        }
                         //关键词
                         if (keywords.Count > 0)
                             foreach (string st in keywords)
                             {
                                 if (fileOldName.Contains(st))
-                                    fileNewName = fileNewName.Replace(st, "");
+                                {
+                                    fileNewName = fileOldName.Replace(st, "");
+                                    logger.Write("删除文件夹" + fileOldName + "名称中的" + st, InformationType.Info);
+                                }
                             }
                         //正则表达式     
                         if (regex != null)
                             if (regex.IsMatch(fileNewName))
+                            {
                                 fileNewName = regex.Replace(fileNewName, "");
+                                logger.Write("删除文件夹" + fileOldName + "名称中的正则表达式匹配项", InformationType.Info);
+                            }
+
+                        if (checkBox2.Checked && del_position > 1)
+                        {
+                            logger.Write("删除文件夹" + fileNewName + "名称中第" + del_position + "字符后所有字符", InformationType.Info);
+                            if (radioButton4.Checked)
+                                nameWithoutExtension = ReverseStr(nameWithoutExtension);
+                            if (nameWithoutExtension.Length >= del_position)
+                                nameWithoutExtension = nameWithoutExtension.Substring(0, del_position - 1);
+                            if (radioButton4.Checked)
+                                nameWithoutExtension = ReverseStr(nameWithoutExtension);
+                            fileNewName = nameWithoutExtension + extensionName;
+                        }
+                        else if (!checkBox2.Checked && deletedCounts >= 1)
+                        {
+                            logger.Write("删除文件夹" + fileNewName + "名称中第" + del_position + "字符后" + del_counts + "个字符", InformationType.Info);
+                            if (radioButton4.Checked)
+                                nameWithoutExtension = ReverseStr(nameWithoutExtension);
+                            if (nameWithoutExtension.Length - del_position + 1 >= del_counts)
+                                nameWithoutExtension = nameWithoutExtension.Remove(del_position - 1, del_counts);
+                            else
+                                nameWithoutExtension = nameWithoutExtension.Substring(0, del_position - 1);
+                            if (radioButton4.Checked)
+                                nameWithoutExtension = ReverseStr(nameWithoutExtension);
+                            fileNewName = nameWithoutExtension + extensionName;
+                        }
+                        //在指定位置添加字符
+                        else
+                        {
+                            if (!String.IsNullOrEmpty(txt_addFirst.Text))
+                            {
+                                if (fileNewName.Length + txt_addFirst.Text.Length <= 255)
+                                {
+                                    logger.Write("在文件夹" + fileNewName + "前添加" + txt_addFirst, InformationType.Info);
+                                    fileNewName = txt_addFirst.Text + fileNewName;
+                                }
+                            }
+                            if (!String.IsNullOrEmpty(txt_addLast.Text))
+                            {
+                                if (fileNewName.Length + txt_addLast.Text.Length <= 255)
+                                {
+                                    logger.Write("在文件夹" + fileNewName + "后添加" + txt_addLast, InformationType.Info);
+                                    fileNewName = fileNewName + txt_addLast.Text;
+                                }
+                            }
+                            if (!String.IsNullOrEmpty(textBox4.Text))
+                            {
+                                if (fileNewName.Length + textBox4.Text.Length <= 255)
+                                {
+                                    logger.Write("在文件夹" + fileNewName + "第" + (int)numericUpDown1.Value + "字符后添加" + textBox4.Text, InformationType.Info);
+                                    fileNewName = fileNewName.Insert((int)numericUpDown1.Value, textBox4.Text);
+                                }
+                            }
+                        }
+                        //替换
+                        if (!String.IsNullOrEmpty(textBox5.Text))
+                        {
+                            if (fileNewName.Contains(textBox5.Text))
+                            {
+                                if (String.IsNullOrEmpty(textBox6.Text))
+                                    fileNewName.Replace(textBox5.Text, "");
+                                else
+                                    fileNewName.Replace(textBox5.Text, textBox6.Text);
+                                logger.Write("将文件夹" + fileNewName + "名称中" + textBox5.Text + "替换为" + (String.IsNullOrEmpty(textBox6.Text) ? "" : textBox6.Text), InformationType.Info);
+                            }
+                        }
                         fileNewName.Trim();
                         //重命名
                         if (fileNewName != fileOldName)
@@ -150,15 +226,19 @@ namespace FileRename
                             try
                             {
                                 MyComputer.FileSystem.RenameFile(f.FullName, fileNewName);
+                                logger.Write("文件夹" + fileOldName + "重命名为" + fileNewName, InformationType.Success);
                                 renamedCounts++;
                                 upStatus(1, renamedCounts.ToString());
                             }
                             catch (Exception e)
                             {
-                                MessageBox.Show(e.Message);
+                                logger.Write("文件夹" + fileOldName + "重命名失败。" + e.Message, InformationType.Failure);
+                                MessageBox.Show(e.ToString());
                             }
                         }
                     }
+                }
+                //重命名文件
                 foreach (FileInfo f in root.GetFiles())
                 {
                     if (flagStop)
@@ -173,6 +253,7 @@ namespace FileRename
                             if (fileNewName.Contains(s))
                             {
                                 info.Close();
+                                logger.Write("该文件" + fileOldName + "包含跳过关键词 " + s + " ，跳过", InformationType.Info);
                                 skip = true;
                                 break;
                             }
@@ -184,6 +265,7 @@ namespace FileRename
                             if (fileOldName.Contains(s))
                             {
                                 f.Delete();
+                                logger.Write("该文件" + fileOldName + "包含删除关键词 " + s + " ，删除", InformationType.Success);
                                 deletedCounts++;
                                 upStatus(2, deletedCounts.ToString());
                                 info.Close();
@@ -194,16 +276,26 @@ namespace FileRename
                         foreach (string st in keywords)
                         {
                             if (fileOldName.Contains(st))
+                            {
                                 fileNewName = fileNewName.Replace(st, "");
+                                logger.Write("删除文件" + fileOldName + "名称中的" + st, InformationType.Info);
+                            }
                         }
                     //正则表达式     \[\d{6}\]
                     if (regex != null)
                         if (regex.IsMatch(fileNewName))
+                        {
                             fileNewName = regex.Replace(fileNewName, "");
+                            logger.Write("删除文件" + fileOldName + "名称中的正则表达式匹配项", InformationType.Info);
+                        }
                     //删除指定位置字符
-                    nameWithoutExtension = fileNewName.Replace(extensionName, "");
+                    if (!String.IsNullOrEmpty(extensionName))
+                        nameWithoutExtension = fileNewName.Replace(extensionName, "");
+                    else
+                        nameWithoutExtension = fileNewName;
                     if (checkBox2.Checked && del_position > 1)
                     {
+                        logger.Write("删除文件" + fileNewName + "名称中第" + del_position + "字符后所有字符", InformationType.Info);
                         if (radioButton4.Checked)
                             nameWithoutExtension = ReverseStr(nameWithoutExtension);
                         if (nameWithoutExtension.Length >= del_position)
@@ -212,14 +304,15 @@ namespace FileRename
                             nameWithoutExtension = ReverseStr(nameWithoutExtension);
                         fileNewName = nameWithoutExtension + extensionName;
                     }
-                    else if (!checkBox2.Checked && deletedCounts>= 1)
+                    else if (!checkBox2.Checked && deletedCounts >= 1)
                     {
+                        logger.Write("删除文件" + fileNewName + "名称中第" + del_position + "字符后" + del_counts + "个字符", InformationType.Info);
                         if (radioButton4.Checked)
                             nameWithoutExtension = ReverseStr(nameWithoutExtension);
-                        if(nameWithoutExtension.Length-del_position+1>=del_counts)
+                        if (nameWithoutExtension.Length - del_position + 1 >= del_counts)
                             nameWithoutExtension = nameWithoutExtension.Remove(del_position - 1, del_counts);
                         else
-                            nameWithoutExtension = nameWithoutExtension.Substring(0,del_position - 1);
+                            nameWithoutExtension = nameWithoutExtension.Substring(0, del_position - 1);
                         if (radioButton4.Checked)
                             nameWithoutExtension = ReverseStr(nameWithoutExtension);
                         fileNewName = nameWithoutExtension + extensionName;
@@ -227,46 +320,65 @@ namespace FileRename
                     //在指定位置添加字符
                     else
                     {
-                        if(txt_addFirst.Text.ToString()!="")
+                        if (!String.IsNullOrEmpty(txt_addFirst.Text))
                         {
                             if (fileNewName.Length + txt_addFirst.Text.Length <= 255)
+                            {
+                                logger.Write("在文件" + fileNewName + "前添加" + txt_addFirst, InformationType.Info);
                                 fileNewName = txt_addFirst.Text + fileNewName;
+                            }
                         }
-                        if(txt_addLast.Text.ToString()!="")
+                        if (!String.IsNullOrEmpty(txt_addLast.Text))
                         {
                             if (fileNewName.Length + txt_addLast.Text.Length <= 255)
-                                fileNewName =  fileNewName+txt_addLast.Text;
+                            {
+                                logger.Write("在文件" + fileNewName + "后添加" + txt_addLast, InformationType.Info);
+                                fileNewName = fileNewName + txt_addLast.Text;
+                            }
                         }
-                        if(textBox4.Text.ToString()!="")
+                        if (!String.IsNullOrEmpty(textBox4.Text))
                         {
                             if (fileNewName.Length + textBox4.Text.Length <= 255)
+                            {
+                                logger.Write("在文件" + fileNewName + "第" + (int)numericUpDown1.Value + "字符后添加" + textBox4.Text, InformationType.Info);
                                 fileNewName = fileNewName.Insert((int)numericUpDown1.Value, textBox4.Text);
+                            }
                         }
                     }
                     //替换
-                    if (textBox5.Text.ToString() != "")
-                        fileNewName.Replace(textBox5.Text, textBox6.Text.ToString());
-
-
+                    if (!String.IsNullOrEmpty(textBox5.Text))
+                    {
+                        if (fileNewName.Contains(textBox5.Text))
+                        {
+                            if (String.IsNullOrEmpty(textBox6.Text))
+                                fileNewName.Replace(textBox5.Text, "");
+                            else
+                                fileNewName.Replace(textBox5.Text, textBox6.Text);
+                            logger.Write("将文件" + fileNewName + "名称中" + textBox5.Text + "替换为" + (String.IsNullOrEmpty(textBox6.Text) ? "" : textBox6.Text), InformationType.Info);
+                        }
+                    }
                     fileNewName = fileNewName.Trim();
                     if (fileNewName != fileOldName)
                     {
                         try
                         {
                             MyComputer.FileSystem.RenameFile(f.FullName, fileNewName);
+                            logger.Write("文件" + fileOldName + "重命名为" + fileNewName, InformationType.Success);
                             renamedCounts++;
                             upStatus(1, renamedCounts.ToString());
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.Message);
+                            logger.Write("文件" + fileOldName + "重命名失败。" + ex.Message, InformationType.Failure);
+                            MessageBox.Show(ex.ToString());
                         }
                     }
                     format = "";
                     size = "";
                     format = info.Get(StreamKind.Video, 0, "Format");
-                    if (format == "")
-                        format = extensionName.Replace(".", "");
+                    if (String.IsNullOrEmpty(format))
+                        if (!String.IsNullOrEmpty(extensionName))
+                            format = extensionName.Replace(".", "");
                     size = GetLength(f.Length);
                     addRow(f.Name, format, info.Get(StreamKind.Video, 0, "Width") + "x" + info.Get(StreamKind.Video, 0, "Height"), size, f.FullName);
                     info.Close();
@@ -274,7 +386,8 @@ namespace FileRename
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message);
+                logger.Write("异常：" + ee.Message, InformationType.Error);
+                MessageBox.Show(ee.ToString());
             }
         }
         //重命名文件夹内的文件（包括子目录）
@@ -314,6 +427,22 @@ namespace FileRename
             keywords_delete.Clear();
             toolStripStatusLabel2.Text = "0";
             toolStripStatusLabel4.Text = "0";
+            dir1 = textBox2.Text;
+            dir2 = textBox3.Text;
+            del_position = Convert.ToInt32(numericUpDown2.Value);
+            del_counts = Convert.ToInt32(numericUpDown3.Value);
+            add_position = Convert.ToInt32(numericUpDown1.Value);
+
+            //读取关键词列表
+            string keyword = "";
+            if (File.Exists(dir2))
+            {
+                StreamReader sr = new StreamReader(dir2, Encoding.UTF8);
+                while ((keyword = sr.ReadLine()) != null)
+                    keywords.Add(keyword);
+                sr.Close();
+            }
+            logger.Write("删除文件名中的下列关键词：" + String.Join(",", keywords.ToArray()), InformationType.Info);
             //获取删除关键词
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
                 if (checkedListBox1.GetItemChecked(i))
@@ -323,7 +452,7 @@ namespace FileRename
                 if (checkedListBox2.GetItemChecked(i))
                     keywords_skip.Add(checkedListBox2.GetItemText(checkedListBox2.Items[i]));
             //获取正则表达式
-            if (textBox1.Text.ToString() != "")
+            if (!String.IsNullOrEmpty(textBox1.Text))
                 regex = new Regex(textBox1.Text);
 
             backgroundWorker1.DoWork += BackgroundWorker1_DoWork;
@@ -336,7 +465,8 @@ namespace FileRename
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message);
+                logger.Write(ee.Message, InformationType.Error);
+                MessageBox.Show(ee.ToString());
             }
         }
         #region Menu
@@ -389,56 +519,66 @@ namespace FileRename
             saveFileDialog.CreatePrompt = false;
             saveFileDialog.FileName = "FileList";
             saveFileDialog.Title = "保存";
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            Stream stream;
+            StreamWriter sw;
+            try
             {
-                Stream stream = saveFileDialog.OpenFile();
-                StreamWriter sw = new StreamWriter(stream, Encoding.UTF8);
-
-                string strLine = "";
-                try
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    //表头
-                    for (int i = 0; i < dgv.ColumnCount; i++)
+                    stream = saveFileDialog.OpenFile();
+                    sw = new StreamWriter(stream, Encoding.UTF8);
+                    try
                     {
-                        if (i > 0)
-                            strLine += ",";
-                        strLine += dgv.Columns[i].HeaderText;
-                    }
-                    strLine.Remove(strLine.Length - 1);
-                    sw.WriteLine(strLine);
-                    strLine = "";
-                    //表的内容
-                    for (int j = 0; j < dgv.Rows.Count; j++)
-                    {
-                        strLine = "";
-                        int colCount = dgv.Columns.Count;
-                        for (int k = 0; k < colCount; k++)
+                        string strLine = "";
+                        //表头
+                        for (int i = 0; i < dgv.ColumnCount; i++)
                         {
-                            if (k > 0 && k < colCount)
+                            if (i > 0)
                                 strLine += ",";
-                            if (dgv.Rows[j].Cells[k].Value == null)
-                                strLine += "";
-                            else
-                            {
-                                string cell = dgv.Rows[j].Cells[k].Value.ToString().Trim();
-                                //防止里面含有特殊符号
-                                cell = cell.Replace("\"", "\"\"");
-                                cell = "\"" + cell + "\"";
-                                strLine += cell;
-                            }
+                            strLine += dgv.Columns[i].HeaderText;
                         }
+                        strLine.Remove(strLine.Length - 1);
                         sw.WriteLine(strLine);
+                        strLine = "";
+                        //表的内容
+                        for (int j = 0; j < dgv.Rows.Count; j++)
+                        {
+                            strLine = "";
+                            int colCount = dgv.Columns.Count;
+                            for (int k = 0; k < colCount; k++)
+                            {
+                                if (k > 0 && k < colCount)
+                                    strLine += ",";
+                                if (dgv.Rows[j].Cells[k].Value == null)
+                                    strLine += "";
+                                else
+                                {
+                                    string cell = dgv.Rows[j].Cells[k].Value.ToString().Trim();
+                                    //防止里面含有特殊符号
+                                    cell = cell.Replace("\"", "\"\"");
+                                    cell = "\"" + cell + "\"";
+                                    strLine += cell;
+                                }
+                            }
+                            sw.WriteLine(strLine);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    finally
+                    {
+                        if (sw != null)
+                            sw.Close();
+                        if (stream != null)
+                            stream.Close();
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    sw.Close();
-                    stream.Close();
-                }
+            }
+            catch(Exception ee)
+            {
+                MessageBox.Show(ee.Message);
             }
         }
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -482,7 +622,7 @@ namespace FileRename
                     }
                     catch (Exception ee)
                     {
-                        MessageBox.Show(ee.Message);
+                        MessageBox.Show(ee.ToString());
                     }
                 }
         }
@@ -491,7 +631,7 @@ namespace FileRename
             if (flagForLoadCompleted)
                 if (e.ColumnIndex == 1 && e.RowIndex < dgv.RowCount)
                 {
-                    if (e.FormattedValue.ToString() == "")
+                    if (e.FormattedValue.ToString().Length < 1)
                         MessageBox.Show("文件名不能为空");
                     if (e.FormattedValue.ToString().Contains("DataGridView"))
                     {
@@ -527,7 +667,6 @@ namespace FileRename
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 textBox2.Text = folderBrowserDialog1.SelectedPath;
-                dir1 = textBox2.Text;
             }
         }
         private void btn_OpenFile_Click(object sender, EventArgs e)
@@ -574,27 +713,34 @@ namespace FileRename
             textBox1.ReadOnly = false;
             textBox2.ReadOnly = false;
             textBox3.ReadOnly = false;
+            logger.Close();
         }
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
+                logger.Write("开始重命名", InformationType.Info);
                 if (!Directory.Exists(dir1))
                 {
                     MessageBox.Show("路径" + dir1 + "不存在");
-                    return;
+                    logger.Write("路径" + dir1 + "不存在", InformationType.Error);
                 }
-                if (radioButton1.Checked)
-                    GetFileInfo(dir1);
                 else
-                    getDirectory(dir1);
+                {
+                    if (radioButton1.Checked)
+                        GetFileInfo(dir1);
+                    else
+                        getDirectory(dir1);
+                }
             }
             catch (IOException ee)
             {
-                MessageBox.Show(ee.Message);
+                MessageBox.Show(ee.ToString());
+                logger.Write(ee.Message, InformationType.Error);
             }
             finally
             {
+                logger.Write("完成重命名", InformationType.Info);
             }
         }
         //拖动文件夹到panel1获取目标路径
@@ -686,6 +832,47 @@ namespace FileRename
                     MessageBox.Show("文件名不能包含" + a + "字符");
                     break;
                 }
+            }
+        }
+
+        private void textBox2_Leave(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(textBox2.Text))
+            {
+                t2has = false;
+                textBox2.Text = "可将文件夹拖动至此区域";
+                textBox2.ForeColor = SystemColors.ButtonShadow;
+            }
+            else
+                t2has = true;
+        }
+
+        private void textBox2_Enter(object sender, EventArgs e)
+        {
+            if(!t2has)
+            {
+                textBox2.Text = "";
+                textBox2.ForeColor = Color.Black;
+            }
+        }
+        private void textBox3_Leave(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(textBox3.Text))
+            {
+                t3has = false;
+                textBox3.Text = "可将文件拖动至此区域";
+                textBox3.ForeColor = SystemColors.ButtonShadow;
+            }
+            else
+                t3has = true;
+        }
+
+        private void textBox3_Enter(object sender, EventArgs e)
+        {
+            if (!t3has)
+            {
+                textBox3.Text = "";
+                textBox3.ForeColor = Color.Black;
             }
         }
     }
