@@ -101,7 +101,7 @@ namespace FileRename
                 string format = "";
                 string extensionName = "";
                 string nameWithoutExtension = "";
-                string size = "";
+                string size = "";                  
                 //重命名文件夹
                 if (checkBox1.Checked)
                 {
@@ -118,7 +118,7 @@ namespace FileRename
                                 if (fileNewName.Contains(s))
                                 {
                                     skip = true;
-                                    logger.Write("该文件夹" + fileOldName + "包含跳过关键词 " + s + " ，跳过", InformationType.Info);
+                                    logger.Write("文件夹" + fileOldName + "包含跳过关键词 " + s + " ，跳过", InformationType.Info);
                                     break;
                                 }
                         }
@@ -131,7 +131,7 @@ namespace FileRename
                                 if (fileOldName.Contains(s))
                                 {
                                     f.Delete(true);
-                                    logger.Write("该文件夹" + fileOldName + "包含删除关键词 " + s + " ，删除", InformationType.Success);
+                                    logger.Write("文件夹" + fileOldName + "包含删除关键词 " + s + " ，删除", InformationType.Success);
                                     deletedCounts++;
                                     upStatus(2, deletedCounts.ToString());
                                     continue;
@@ -141,9 +141,9 @@ namespace FileRename
                         if (keywords.Count > 0)
                             foreach (string st in keywords)
                             {
-                                if (fileOldName.Contains(st))
+                                if (fileNewName.ToLower().Contains(st))
                                 {
-                                    fileNewName = fileOldName.Replace(st, "");
+                                    fileNewName = fileNewName.Replace(st, "");
                                     logger.Write("删除文件夹" + fileOldName + "名称中的" + st, InformationType.Info);
                                 }
                             }
@@ -233,9 +233,11 @@ namespace FileRename
                             catch (Exception e)
                             {
                                 logger.Write("文件夹" + fileOldName + "重命名失败。" + e.Message, InformationType.Failure);
-                                MessageBox.Show(e.ToString());
+                                MessageBox.Show(e.Message);
                             }
                         }
+                        else
+                            logger.Write("文件夹" + fileOldName + "不需要重命名" , InformationType.Info);
                     }
                 }
                 //重命名文件
@@ -253,7 +255,7 @@ namespace FileRename
                             if (fileNewName.Contains(s))
                             {
                                 info.Close();
-                                logger.Write("该文件" + fileOldName + "包含跳过关键词 " + s + " ，跳过", InformationType.Info);
+                                logger.Write("文件" + fileOldName + "包含跳过关键词 " + s + " ，跳过", InformationType.Info);
                                 skip = true;
                                 break;
                             }
@@ -265,7 +267,7 @@ namespace FileRename
                             if (fileOldName.Contains(s))
                             {
                                 f.Delete();
-                                logger.Write("该文件" + fileOldName + "包含删除关键词 " + s + " ，删除", InformationType.Success);
+                                logger.Write("文件" + fileOldName + "包含删除关键词 " + s + " ，删除", InformationType.Success);
                                 deletedCounts++;
                                 upStatus(2, deletedCounts.ToString());
                                 info.Close();
@@ -275,9 +277,9 @@ namespace FileRename
                     if (keywords.Count > 0)
                         foreach (string st in keywords)
                         {
-                            if (fileOldName.Contains(st))
+                            if (fileNewName.ToLower().Contains(st))
                             {
-                                fileNewName = fileNewName.Replace(st, "");
+                                fileNewName = fileNewName.Replace(st,"");
                                 logger.Write("删除文件" + fileOldName + "名称中的" + st, InformationType.Info);
                             }
                         }
@@ -370,9 +372,11 @@ namespace FileRename
                         catch (Exception ex)
                         {
                             logger.Write("文件" + fileOldName + "重命名失败。" + ex.Message, InformationType.Failure);
-                            MessageBox.Show(ex.ToString());
+                            MessageBox.Show(ex.Message);
                         }
                     }
+                    else
+                        logger.Write("文件" + fileOldName + "不需要重命名", InformationType.Info);
                     format = "";
                     size = "";
                     format = info.Get(StreamKind.Video, 0, "Format");
@@ -387,7 +391,7 @@ namespace FileRename
             catch (Exception ee)
             {
                 logger.Write("异常：" + ee.Message, InformationType.Error);
-                MessageBox.Show(ee.ToString());
+                MessageBox.Show(ee.Message);
             }
         }
         //重命名文件夹内的文件（包括子目录）
@@ -425,6 +429,8 @@ namespace FileRename
             textBox3.ReadOnly = true;
             dgv.Rows.Clear();
             keywords_delete.Clear();
+            renamedCounts = 0;
+            deletedCounts = 0;
             toolStripStatusLabel2.Text = "0";
             toolStripStatusLabel4.Text = "0";
             dir1 = textBox2.Text;
@@ -439,7 +445,7 @@ namespace FileRename
             {
                 StreamReader sr = new StreamReader(dir2, Encoding.UTF8);
                 while ((keyword = sr.ReadLine()) != null)
-                    keywords.Add(keyword);
+                    keywords.Add(keyword.ToLower());
                 sr.Close();
             }
             logger.Write("删除文件名中的下列关键词：" + String.Join(",", keywords.ToArray()), InformationType.Info);
@@ -463,7 +469,7 @@ namespace FileRename
             catch (Exception ee)
             {
                 logger.Write(ee.Message, InformationType.Error);
-                MessageBox.Show(ee.ToString());
+                MessageBox.Show(ee.Message);
             }
         }
         #region Menu
@@ -478,31 +484,42 @@ namespace FileRename
             saveFileDialog.CreatePrompt = false;
             saveFileDialog.FileName = "FileList";
             saveFileDialog.Title = "保存";
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            Stream stream;
+            StreamWriter streamWriter;
+            try
             {
-                Stream stream = saveFileDialog.OpenFile();
-                StreamWriter streamWriter = new StreamWriter(stream, Encoding.UTF8);
-                string strSplit = "          ";
-                try
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    for (int i = 0; i < dgv.Rows.Count; i++)
+                    stream = saveFileDialog.OpenFile();
+                    streamWriter = new StreamWriter(stream, Encoding.UTF8);
+                    string strSplit = "          ";
+                    try
                     {
-                        for (int j = 0; j < dgv.Columns.Count; j++)
+                        for (int i = 0; i < dgv.Rows.Count; i++)
                         {
-                            streamWriter.Write(dgv.Rows[i].Cells[j].Value.ToString() + strSplit);
+                            for (int j = 0; j < dgv.Columns.Count; j++)
+                            {
+                                streamWriter.Write(dgv.Rows[i].Cells[j].Value.ToString() + strSplit);
+                            }
+                            streamWriter.Write(Environment.NewLine);
                         }
-                        streamWriter.Write(Environment.NewLine);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    finally
+                    {
+                        if (streamWriter != null)
+                            streamWriter.Close();
+                        if (stream != null)
+                            stream.Close();
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    streamWriter.Close();
-                    stream.Close();
-                }
+            }
+            catch(Exception ee)
+            {
+                MessageBox.Show(ee.Message);
             }
         }
         private void cSVToolStripMenuItem_Click(object sender, EventArgs e)
@@ -619,7 +636,7 @@ namespace FileRename
                     }
                     catch (Exception ee)
                     {
-                        MessageBox.Show(ee.ToString());
+                        MessageBox.Show(ee.Message);
                     }
                 }
         }
@@ -655,8 +672,11 @@ namespace FileRename
                     return;
                 string temp = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
                 if (!File.Exists(temp))
-                    return;
-                System.Diagnostics.Process.Start("Explorer", "/select," + Path.GetDirectoryName(temp) + "\\" + Path.GetFileName(temp));
+                    System.Diagnostics.Process.Start("Explorer", Path.GetDirectoryName(temp));
+                else if (Directory.Exists(temp.Substring(0, temp.LastIndexOf("\\"))))
+                    System.Diagnostics.Process.Start("Explorer", "/select," + Path.GetDirectoryName(temp) + "\\" + Path.GetFileName(temp));
+                else
+                    MessageBox.Show(temp+"不存在");
             }
         }
         private void btn_OpenDir_Click(object sender, EventArgs e)
@@ -710,6 +730,7 @@ namespace FileRename
             textBox1.ReadOnly = false;
             textBox2.ReadOnly = false;
             textBox3.ReadOnly = false;
+            logger.Write("\r\n****************************************************\r\n", InformationType.Info);
             logger.Close();
         }
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -732,7 +753,7 @@ namespace FileRename
             }
             catch (IOException ee)
             {
-                MessageBox.Show(ee.ToString());
+                MessageBox.Show(ee.Message);
                 logger.Write(ee.Message, InformationType.Error);
             }
             finally
@@ -755,6 +776,7 @@ namespace FileRename
             if (File.Exists(path))
                 path = Path.GetDirectoryName(path);
             textBox2.Text = path;
+            textBox2.ForeColor = Color.Black;
         }
         //拖动文件到tabPage2获取关键词列表路径
         private void tabPage2_DragEnter(object sender, DragEventArgs e)
@@ -769,6 +791,7 @@ namespace FileRename
             string path = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
             if (File.Exists(path))
                 textBox3.Text = path;
+            textBox3.ForeColor = Color.Black;
         }
         private void numericUpDown2_Validating(object sender, CancelEventArgs e)
         {
@@ -871,6 +894,21 @@ namespace FileRename
                 textBox3.Text = "";
                 textBox3.ForeColor = Color.Black;
             }
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(textBox2.Text))
+                t2has = true;
+            else
+                t2has = false;
+        }
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(textBox3.Text))
+                t3has = true;
+            else
+                t3has = false;
         }
     }
 }

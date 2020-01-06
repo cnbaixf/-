@@ -314,15 +314,18 @@
             ".txt",
             ".ssa",
             ".ass",
+            ".srt",
             ".jpg",
             ".jpeg",
+            ".swf",
             ".png",
             ".bmp",
             ".gif",
             ".7z",
             ".rar",
             ".zip",
-            ".exe"});
+            ".exe",
+            ".ini"});
             this.checkedListBox2.Location = new System.Drawing.Point(3, 17);
             this.checkedListBox2.Name = "checkedListBox2";
             this.checkedListBox2.Size = new System.Drawing.Size(169, 159);
@@ -614,6 +617,7 @@
             this.textBox3.Size = new System.Drawing.Size(151, 21);
             this.textBox3.TabIndex = 23;
             this.textBox3.Text = "可将文件拖动至此区域";
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             this.textBox3.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragDrop);
             this.textBox3.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabPage2_DragEnter);
             this.textBox3.Enter += new System.EventHandler(this.textBox3_Enter);
@@ -901,6 +905,7 @@
             this.textBox2.Size = new System.Drawing.Size(153, 21);
             this.textBox2.TabIndex = 2;
             this.textBox2.Text = "可将文件夹拖动至此区域";
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             this.textBox2.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel1_DragDrop);
             this.textBox2.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel1_DragEnter);
             this.textBox2.Enter += new System.EventHandler(this.textBox2_Enter);
@@ -1019,10 +1024,6 @@
             this.dataGridViewLinkColumn1.Name = "dataGridViewLinkColumn1";
             this.dataGridViewLinkColumn1.ReadOnly = true;
             this.dataGridViewLinkColumn1.Text = "";
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // backgroundWorker1
             // 

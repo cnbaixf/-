@@ -13,6 +13,8 @@ namespace FileRename
 {
     public partial class About : Form
     {
+        string Version = "1.1.7";
+
         public About()
         {
             InitializeComponent();
@@ -25,6 +27,11 @@ namespace FileRename
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/cnbaixf/Rename/releases");
+        }
+
+        private void About_Load(object sender, EventArgs e)
+        {
+            label2.Text = Version;
         }
     }
 }
