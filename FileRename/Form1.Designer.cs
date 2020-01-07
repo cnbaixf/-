@@ -103,6 +103,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.checkAll1 = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -296,6 +297,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkAll1);
             this.groupBox1.Controls.Add(this.checkedListBox2);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
@@ -325,7 +327,10 @@
             ".rar",
             ".zip",
             ".exe",
-            ".ini"});
+            ".ini",
+            ".db",
+            ".ASS",
+            ".sub"});
             this.checkedListBox2.Location = new System.Drawing.Point(3, 17);
             this.checkedListBox2.Name = "checkedListBox2";
             this.checkedListBox2.Size = new System.Drawing.Size(169, 159);
@@ -1030,6 +1035,16 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker1_RunWorkerCompleted);
             // 
+            // checkAll1
+            // 
+            this.checkAll1.AutoSize = true;
+            this.checkAll1.Location = new System.Drawing.Point(154, 0);
+            this.checkAll1.Name = "checkAll1";
+            this.checkAll1.Size = new System.Drawing.Size(15, 14);
+            this.checkAll1.TabIndex = 7;
+            this.checkAll1.UseVisualStyleBackColor = true;
+            this.checkAll1.CheckedChanged += new System.EventHandler(this.checkAll1_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1057,6 +1072,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
@@ -1158,6 +1174,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.CheckBox checkAll1;
     }
 }
 

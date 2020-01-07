@@ -38,7 +38,6 @@ namespace FileRename
         bool t3has = false;
 
 
-
         private delegate void myDelegate(string str1, string str2, string str3, string str4, string str5);
         private delegate void myDelegate2(int nn, string tt);
         private void addRow(string s1, string s2, string s3, string s4, string s5)
@@ -101,7 +100,7 @@ namespace FileRename
                 string format = "";
                 string extensionName = "";
                 string nameWithoutExtension = "";
-                string size = "";                  
+                string size = "";
                 //重命名文件夹
                 if (checkBox1.Checked)
                 {
@@ -141,7 +140,7 @@ namespace FileRename
                         if (keywords.Count > 0)
                             foreach (string st in keywords)
                             {
-                                if (fileNewName.ToLower().Contains(st))
+                                if (fileNewName.Contains(st))
                                 {
                                     fileNewName = fileNewName.Replace(st, "");
                                     logger.Write("删除文件夹" + fileOldName + "名称中的" + st, InformationType.Info);
@@ -213,13 +212,13 @@ namespace FileRename
                             if (fileNewName.Contains(textBox5.Text))
                             {
                                 if (String.IsNullOrEmpty(textBox6.Text))
-                                    fileNewName.Replace(textBox5.Text, "");
+                                    fileNewName = fileNewName.Replace(textBox5.Text, "");
                                 else
-                                    fileNewName.Replace(textBox5.Text, textBox6.Text);
+                                    fileNewName = fileNewName.Replace(textBox5.Text, textBox6.Text);
                                 logger.Write("将文件夹" + fileNewName + "名称中" + textBox5.Text + "替换为" + (String.IsNullOrEmpty(textBox6.Text) ? "" : textBox6.Text), InformationType.Info);
                             }
                         }
-                        fileNewName.Trim();
+                        fileNewName = fileNewName.Trim();
                         //重命名
                         if (fileNewName != fileOldName)
                         {
@@ -237,7 +236,7 @@ namespace FileRename
                             }
                         }
                         else
-                            logger.Write("文件夹" + fileOldName + "不需要重命名" , InformationType.Info);
+                            logger.Write("文件夹" + fileOldName + "不需要重命名", InformationType.Info);
                     }
                 }
                 //重命名文件
@@ -277,13 +276,13 @@ namespace FileRename
                     if (keywords.Count > 0)
                         foreach (string st in keywords)
                         {
-                            if (fileNewName.ToLower().Contains(st))
+                            if (fileNewName.Contains(st))
                             {
-                                fileNewName = fileNewName.Replace(st,"");
+                                fileNewName = fileNewName.Replace(st, "");
                                 logger.Write("删除文件" + fileOldName + "名称中的" + st, InformationType.Info);
                             }
                         }
-                    //正则表达式     \[\d{6}\]
+                    //正则表达式     \[\d{6}\]   \[[a-z]*[A-Z]*[0-9]*\]
                     if (regex != null)
                         if (regex.IsMatch(fileNewName))
                         {
@@ -353,9 +352,9 @@ namespace FileRename
                         if (fileNewName.Contains(textBox5.Text))
                         {
                             if (String.IsNullOrEmpty(textBox6.Text))
-                                fileNewName.Replace(textBox5.Text, "");
+                                fileNewName = fileNewName.Replace(textBox5.Text, "");
                             else
-                                fileNewName.Replace(textBox5.Text, textBox6.Text);
+                                fileNewName = fileNewName.Replace(textBox5.Text, textBox6.Text);
                             logger.Write("将文件" + fileNewName + "名称中" + textBox5.Text + "替换为" + (String.IsNullOrEmpty(textBox6.Text) ? "" : textBox6.Text), InformationType.Info);
                         }
                     }
@@ -384,7 +383,7 @@ namespace FileRename
                         if (!String.IsNullOrEmpty(extensionName))
                             format = extensionName.Replace(".", "");
                     size = GetLength(f.Length);
-                    addRow(f.Name, format, info.Get(StreamKind.Video, 0, "Width") + "x" + info.Get(StreamKind.Video, 0, "Height"), size, f.FullName);
+                    addRow(fileNewName, format, info.Get(StreamKind.Video, 0, "Width") + "x" + info.Get(StreamKind.Video, 0, "Height"), size, f.FullName);
                     info.Close();
                 }
             }
@@ -417,53 +416,9 @@ namespace FileRename
         }
         private void btn_Start_Click(object sender, EventArgs e)
         {
-            fileCounts = 0;
-            flagStop = false;
-            btn_Start.Enabled = false;
-            btn_AddDeleteKey.Enabled = false;
-            btn_AddSkipKey.Enabled = false;
-            btn_OpenDire.Enabled = false;
-            btn_OpenFile.Enabled = false;
-            textBox1.ReadOnly = true;
-            textBox2.ReadOnly = true;
-            textBox3.ReadOnly = true;
-            dgv.Rows.Clear();
-            keywords_delete.Clear();
-            renamedCounts = 0;
-            deletedCounts = 0;
-            toolStripStatusLabel2.Text = "0";
-            toolStripStatusLabel4.Text = "0";
-            dir1 = textBox2.Text;
-            dir2 = textBox3.Text;
-            del_position = Convert.ToInt32(numericUpDown2.Value);
-            del_counts = Convert.ToInt32(numericUpDown3.Value);
-            add_position = Convert.ToInt32(numericUpDown1.Value);
-
-            //读取关键词列表
-            string keyword = "";
-            if (File.Exists(dir2))
-            {
-                StreamReader sr = new StreamReader(dir2, Encoding.UTF8);
-                while ((keyword = sr.ReadLine()) != null)
-                    keywords.Add(keyword.ToLower());
-                sr.Close();
-            }
-            logger.Write("删除文件名中的下列关键词：" + String.Join(",", keywords.ToArray()), InformationType.Info);
-            //获取删除关键词
-            for (int i = 0; i < checkedListBox1.Items.Count; i++)
-                if (checkedListBox1.GetItemChecked(i))
-                    keywords_delete.Add(checkedListBox1.GetItemText(checkedListBox1.Items[i]));
-            //获取跳过关键词
-            for (int i = 0; i < checkedListBox2.Items.Count; i++)
-                if (checkedListBox2.GetItemChecked(i))
-                    keywords_skip.Add(checkedListBox2.GetItemText(checkedListBox2.Items[i]));
-            //获取正则表达式
-            if (!String.IsNullOrEmpty(textBox1.Text))
-                regex = new Regex(textBox1.Text);
-            backgroundWorker1.WorkerSupportsCancellation = true;
+            actionBeforeStart();
             try
             {
-                btn_Stop.Enabled = true;
                 backgroundWorker1.RunWorkerAsync();
             }
             catch (Exception ee)
@@ -517,7 +472,7 @@ namespace FileRename
                     }
                 }
             }
-            catch(Exception ee)
+            catch (Exception ee)
             {
                 MessageBox.Show(ee.Message);
             }
@@ -590,7 +545,7 @@ namespace FileRename
                     }
                 }
             }
-            catch(Exception ee)
+            catch (Exception ee)
             {
                 MessageBox.Show(ee.Message);
             }
@@ -676,7 +631,7 @@ namespace FileRename
                 else if (Directory.Exists(temp.Substring(0, temp.LastIndexOf("\\"))))
                     System.Diagnostics.Process.Start("Explorer", "/select," + Path.GetDirectoryName(temp) + "\\" + Path.GetFileName(temp));
                 else
-                    MessageBox.Show(temp+"不存在");
+                    MessageBox.Show(temp + "不存在");
             }
         }
         private void btn_OpenDir_Click(object sender, EventArgs e)
@@ -721,15 +676,7 @@ namespace FileRename
         #endregion
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            btn_Start.Enabled = true;
-            btn_Stop.Enabled = false;
-            btn_AddDeleteKey.Enabled = true;
-            btn_AddSkipKey.Enabled = true;
-            btn_OpenDire.Enabled = true;
-            btn_OpenFile.Enabled = true;
-            textBox1.ReadOnly = false;
-            textBox2.ReadOnly = false;
-            textBox3.ReadOnly = false;
+            actionAfterStop();          
             logger.Write("\r\n****************************************************\r\n", InformationType.Info);
             logger.Close();
         }
@@ -869,7 +816,7 @@ namespace FileRename
 
         private void textBox2_Enter(object sender, EventArgs e)
         {
-            if(!t2has)
+            if (!t2has)
             {
                 textBox2.Text = "";
                 textBox2.ForeColor = Color.Black;
@@ -899,16 +846,134 @@ namespace FileRename
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(textBox2.Text))
-                t2has = true;
-            else
                 t2has = false;
+            else
+                t2has = true;
         }
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(textBox3.Text))
-                t3has = true;
-            else
                 t3has = false;
+            else
+                t3has = true;
+        }
+
+        private void checkAll1_CheckedChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < checkedListBox2.Items.Count; i++)
+                checkedListBox2.SetItemChecked(i, checkAll1.Checked);
+        }
+        private void actionBeforeStart()
+        {
+            fileCounts = 0;
+            flagStop = false;
+            renamedCounts = 0;
+            deletedCounts = 0;
+            toolStripStatusLabel2.Text = "0";
+            toolStripStatusLabel4.Text = "0";
+            dgv.Rows.Clear();
+            keywords_delete.Clear();
+
+            btn_AddDeleteKey.Enabled = false;
+            btn_AddSkipKey.Enabled = false;
+            btn_OpenDire.Enabled = false;
+            btn_OpenFile.Enabled = false;
+            btn_Start.Enabled = false;
+            btn_Stop.Enabled = true;
+
+            textBox1.Enabled = false;
+            textBox2.Enabled = false;
+            textBox3.Enabled = false;
+            textBox4.Enabled = false;
+            textBox5.Enabled = false;
+            textBox6.Enabled = false;
+            txt_addFirst.Enabled = false;
+            txt_addLast.Enabled = false;
+
+            radioButton1.Enabled = false;
+            radioButton2.Enabled = false;
+            radioButton3.Enabled = false;
+            radioButton4.Enabled = false;
+
+            checkBox1.Enabled = false;
+            checkAll1.Enabled = false;
+            checkBox2.Enabled = false;
+            checkedListBox1.Enabled = false;
+            checkedListBox2.Enabled = false;
+
+            numericUpDown1.Enabled = false;
+            numericUpDown2.Enabled = false;
+            numericUpDown3.Enabled = false;
+
+            SaveAsCSVToolStripMenuItem.Enabled = false;
+            SaveAsTXTToolStripMenuItem.Enabled = false;
+            
+            dir1 = textBox2.Text;
+            dir2 = textBox3.Text;
+            del_position = Convert.ToInt32(numericUpDown2.Value);
+            del_counts = Convert.ToInt32(numericUpDown3.Value);
+            add_position = Convert.ToInt32(numericUpDown1.Value);
+
+            //读取关键词列表
+            string keyword = "";
+            if (File.Exists(dir2))
+            {
+                StreamReader sr = new StreamReader(dir2, Encoding.UTF8);
+                while ((keyword = sr.ReadLine()) != null)
+                {
+                    if (!keywords.Exists(x => x == keyword))
+                        keywords.Add(keyword);
+                }
+                sr.Close();
+            }
+            logger.Write("删除文件名中的下列关键词：" + String.Join(",", keywords.ToArray()), InformationType.Info);
+            //获取删除关键词
+            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                if (checkedListBox1.GetItemChecked(i))
+                    keywords_delete.Add(checkedListBox1.GetItemText(checkedListBox1.Items[i]));
+            //获取跳过关键词
+            for (int i = 0; i < checkedListBox2.Items.Count; i++)
+                if (checkedListBox2.GetItemChecked(i))
+                    keywords_skip.Add(checkedListBox2.GetItemText(checkedListBox2.Items[i]));
+            //获取正则表达式
+            if (!String.IsNullOrEmpty(textBox1.Text))
+                regex = new Regex(textBox1.Text);
+        }
+        private void actionAfterStop()
+        {
+            btn_AddDeleteKey.Enabled = true;
+            btn_AddSkipKey.Enabled = true;
+            btn_OpenDire.Enabled = true;
+            btn_OpenFile.Enabled = true;
+            btn_Start.Enabled = true;
+            btn_Stop.Enabled = false;
+
+            textBox1.Enabled = true;
+            textBox2.Enabled = true;
+            textBox3.Enabled = true;
+            textBox4.Enabled = true;
+            textBox5.Enabled = true;
+            textBox6.Enabled = true;
+            txt_addFirst.Enabled = true;
+            txt_addLast.Enabled = true;
+
+            radioButton1.Enabled = true;
+            radioButton2.Enabled = true;
+            radioButton3.Enabled = true;
+            radioButton4.Enabled = true;
+
+            checkBox1.Enabled = true;
+            checkAll1.Enabled = true;
+            checkBox2.Enabled = true;
+            checkedListBox1.Enabled = true;
+            checkedListBox2.Enabled = true;
+
+            numericUpDown1.Enabled = true;
+            numericUpDown2.Enabled = true;
+            numericUpDown3.Enabled = true;
+
+            SaveAsCSVToolStripMenuItem.Enabled = true;
+            SaveAsTXTToolStripMenuItem.Enabled = true;
         }
     }
 }
